@@ -68,12 +68,14 @@ var PubSubClass = function(context){
 
 			for (i = 0, l = currentTopic.length; i < l; i++) {
 				pair = currentTopic[i] // this is a [function, once_flag] array
-				fn = pair[0] 
-				if (pair[1] /* 'run once' flag set */){
-				  pair[0] = function(){}
-				  toremove.push(i)
+				if(pair){
+					fn = pair[0] 
+					if (pair[1] /* 'run once' flag set */){
+					  pair[0] = function(){}
+					  toremove.push(i)
+					}
+					fn.apply(this.context, args)
 				}
-			   	fn.apply(this.context, args)
 			}
 			for (i = 0, l = toremove.length; i < l; i++) {
 			  currentTopic.splice(toremove[i], 1)
@@ -112,8 +114,10 @@ var PubSubClass = function(context){
 			var currentTopic = this.topics[token.topic]
 			
 			for (var i = 0, l = currentTopic.length; i < l; i++) {
-				if (currentTopic[i][0] === token.callback) {
-					currentTopic.splice(i, 1)
+				if(currentTopic[i]){
+					if (currentTopic[i][0] === token.callback) {
+						currentTopic.splice(i, 1)
+					}
 				}
 			}
 		}
